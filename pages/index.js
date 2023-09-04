@@ -88,8 +88,8 @@ const Home = () => {
           <div className="text-white text-center flex flex-col gap-y-6">
             {guildCount ? (
               <div className="font-bold text-2xl md:text-4xl">
-                {guildCount.toLocaleString()} server owners are using our bot to
-                do Y
+                {guildCount.toLocaleString()} server owners are ready for
+                Ragnarök.
               </div>
             ) : null}
 

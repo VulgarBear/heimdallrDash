@@ -19,7 +19,12 @@ const Guilds = ({ children, selectedGuild, setSelectedGuild }) => {
 
       const guild = localStorage.getItem(selectedGuildKey)
       if (guild) {
-        setSelectedGuild(JSON.parse(guild))
+        try {
+          setSelectedGuild(JSON.parse(JSON.stringify(guild)))
+          //setSelectedGuild(JSON.parse(guild))
+        } catch (error) {
+          console.error('Error parsing guild:', error)
+        }
       }
 
       fetchUserGuilds()
@@ -33,14 +38,14 @@ const Guilds = ({ children, selectedGuild, setSelectedGuild }) => {
   const fetchUserGuilds = async () => {
     const cachedGuilds = localStorage.getItem(cachedGuildsKey)
     if (cachedGuilds) {
-      setGuilds(JSON.parse(cachedGuilds))
+      setGuilds(JSON.parse(JSON.stringify(cachedGuilds)))
     }
 
     const result = await axios({
       url: 'https://discord.com/api/v10/users/@me/guilds',
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bot ${session.data.accessToken}`,
       },
     }).catch((err) => {
       console.error(err)
@@ -53,7 +58,6 @@ const Guilds = ({ children, selectedGuild, setSelectedGuild }) => {
     const guilds = result.data.filter(
       (guild) => guild.owner && allowedServers.includes(guild.name)
     )
-
     const matchingGuilds = await fetchMatchingBotGuilds(guilds)
 
     localStorage.setItem(cachedGuildsKey, JSON.stringify(matchingGuilds))
@@ -112,6 +116,7 @@ const Guilds = ({ children, selectedGuild, setSelectedGuild }) => {
             href={commonStrings.inviteUrl}
             target="_blank"
             className="px-4 py-2 bg-blue-500 rounded-md font-semibold h-11"
+            rel="noreferrer"
           >
             Invite Another Server
           </a>
